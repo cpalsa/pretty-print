@@ -31,8 +31,14 @@ func formatXml(ipt input) (formatted []byte, err error) {
 	}
 
 	doc.Indent(ipt.options.indent)
+	formatted, err = doc.WriteToBytes()
 
-	return doc.WriteToBytes()
+	if err == nil {
+		// etree adds an extra new line -- remove it
+		formatted = []byte(strings.TrimSpace(string(formatted)))
+	}
+
+	return formatted, err
 }
 
 func formatJson(ipt input) (formatted []byte, err error) {
