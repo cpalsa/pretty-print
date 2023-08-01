@@ -8,22 +8,17 @@ import (
 	"golang.design/x/clipboard"
 )
 
-func notify(msg string) {
+func main() {
 	notify := notificator.New(notificator.Options{
 		AppName: "Pretty Print",
 	})
 
-	//"icon/default.png"
-	notify.Push("Formatting Result", msg, "", notificator.UR_NORMAL)
-}
-
-func main() {
 	input, err := getInput()
 
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		if input.options.notifications {
-			notify(fmt.Sprint(err))
+			notify.Push("Pretty Print: Error", fmt.Sprint(err), "", notificator.UR_CRITICAL)
 		}
 		os.Exit(1)
 	}
@@ -33,7 +28,7 @@ func main() {
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		if input.options.notifications {
-			notify(fmt.Sprint(err))
+			notify.Push("Pretty Print: Error", fmt.Sprint(err), "", notificator.UR_CRITICAL)
 		}
 		os.Exit(1)
 	}
@@ -45,7 +40,7 @@ func main() {
 	fmt.Println(string(formatted))
 
 	if input.options.notifications {
-		notify(fmt.Sprintf("Data formatted as %v", input.format))
+		notify.Push("Pretty Print: Success", fmt.Sprintf("Data formatted as %v", input.format), "", notificator.UR_NORMAL)
 	}
 
 	os.Exit(0)
