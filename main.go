@@ -3,41 +3,50 @@ package main
 import (
 	"fmt"
 	"os"
-	"os/exec"
 
-	"github.com/atotto/clipboard"
+	"github.com/0xAX/notificator"
+	"golang.design/x/clipboard"
 )
 
 func notify(msg string) {
-	cmd := exec.Command("notify-send", "Pretty Print", msg)
-	cmd.Run()
-}
+	notify := notificator.New(notificator.Options{
+		AppName: "Pretty Print",
+	})
 
-func exit(msg string, code int) {
-	notify(msg)
-	os.Exit(code)
+	//"icon/default.png"
+	notify.Push("Formatting Result", msg, "", notificator.UR_NORMAL)
 }
 
 func main() {
-	input, err := clipboard.ReadAll()
+	input, err := getInput()
+
 	if err != nil {
-		exit(fmt.Sprintf("Could not read from clipboard: %v", err), 1)
+		fmt.Fprintln(os.Stderr, err)
+		if input.options.notifications {
+			notify(fmt.Sprint(err))
+		}
+		os.Exit(1)
 	}
 
 	formatted, err := format(input)
+
 	if err != nil {
-		exit(fmt.Sprintf("Could not format clipboard content: %v", err), 1)
+		fmt.Fprintln(os.Stderr, err)
+		if input.options.notifications {
+			notify(fmt.Sprint(err))
+		}
+		os.Exit(1)
 	}
 
-	err = clipboard.WriteAll(string(formatted))
-	if err != nil {
-		exit(fmt.Sprintf("Could not write to clipboard: %v", err), 1)
+	if input.options.clipboard {
+		clipboard.Write(clipboard.FmtText, formatted)
 	}
 
-	format := "XML"
-	if isJson(input) {
-		format = "JSON"
+	fmt.Println(string(formatted))
+
+	if input.options.notifications {
+		notify(fmt.Sprintf("Data formatted as %v", input.format))
 	}
 
-	notify(fmt.Sprintf("Clipboard formatted as %v!", format))
+	os.Exit(0)
 }

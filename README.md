@@ -1,16 +1,5 @@
 # pretty-print
-A utility program that parses JSON or XML from the user's clipboad and formats it for easier reading.
-
-## Requirements
-While the clipboard and formatting functionality is (mostly) system agnostic, this software is designed for use on ***nix** systems that have `libnotify` installed, as it uses `notify-send` for its notifications. It also requires you have `xsel` or `xclip` to be installed. 
-
-## Usage
-After building/installing the binary, I recommend binding it to a keyboard shortcut for quick access. 
-
-To format JSON or XML:
-1. highlight the string and copy it to your clipboard
-2. run the program (preferably from a keybinding)
-3. your clipboard's contents will be formatted, you can now paste the result
+A utility program for transforming XML and JSON into a human readable format.
 
 ## Formatting Examples
 
