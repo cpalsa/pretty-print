@@ -51,8 +51,8 @@ func getDataFormat(data []byte) (format string, err error) {
 func getOptions() (opts options) {
 	opts = options{}
 
-	flag.BoolVar(&opts.clipboard, "c", !isInputFromPipe(), "Clipboard mode. Output will also be copied to the clipboard. If stdin is connected to terminal then the current clipboard contents are formatted.")
-	flag.BoolVar(&opts.notifications, "n", opts.clipboard, "Desktop notifications. Defaults to true if using clipboard mode.")
+	flag.BoolVar(&opts.clipboard, "c", false, "Clipboard mode. Output will also be copied to the clipboard. If stdin is connected to terminal then the current clipboard contents are formatted.")
+	flag.BoolVar(&opts.notifications, "n", false, "Desktop notifications. Push desktop notifications on success/failure.")
 	flag.IntVar(&opts.indent, "i", 2, "Indent. Number of spaces that each depth level should be formatted with.")
 	flag.Parse()
 
@@ -62,18 +62,16 @@ func getOptions() (opts options) {
 func getInput() (ipt input, err error) {
 	ipt = input{options: getOptions()}
 
-	// Read data from the pipe/redirection
-	if isInputFromPipe() {
-		ipt.data, err = io.ReadAll(os.Stdin)
-	} else if ipt.options.clipboard {
-		// grab data from clipboard
+	// clipboard mode active and stdin connected to terminal
+	if ipt.options.clipboard && !isInputFromPipe() {
 		ipt.data = clipboard.Read(clipboard.FmtText)
 	} else {
-		err = errors.New("no data rcved from stdin and clipboard mode is disabled")
+		// otherwise, just read what ever stdin points to
+		ipt.data, err = io.ReadAll(os.Stdin)
 	}
 
+	// trim input data and assign format
 	if err == nil {
-		// trim input data and assign format
 		ipt.data = []byte(strings.TrimSpace(string(ipt.data)))
 		ipt.format, err = getDataFormat(ipt.data)
 	}
