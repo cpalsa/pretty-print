@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/0xAX/notificator"
-	"golang.design/x/clipboard"
+	"github.com/atotto/clipboard"
 )
 
 func main() {
@@ -34,7 +34,7 @@ func main() {
 	}
 
 	if input.options.clipboard {
-		clipboard.Write(clipboard.FmtText, formatted)
+		clipboard.WriteAll(string(formatted))
 	}
 
 	fmt.Print(string(formatted))
