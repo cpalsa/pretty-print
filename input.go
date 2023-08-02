@@ -62,6 +62,12 @@ func getOptions() (opts options) {
 func getInput() (ipt input, err error) {
 	ipt = input{options: getOptions()}
 
+	// check if clipboard functionality supported
+	err = clipboard.Init()
+	if ipt.options.clipboard && err != nil {
+		return ipt, err
+	}
+
 	// clipboard mode active and stdin connected to terminal
 	if ipt.options.clipboard && !isInputFromPipe() {
 		ipt.data = clipboard.Read(clipboard.FmtText)

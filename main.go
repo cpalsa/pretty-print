@@ -37,7 +37,7 @@ func main() {
 		clipboard.Write(clipboard.FmtText, formatted)
 	}
 
-	fmt.Println(string(formatted))
+	fmt.Print(string(formatted))
 
 	if input.options.notifications {
 		notify.Push("Pretty Print: Success", fmt.Sprintf("Data formatted as %v", input.format), "", notificator.UR_NORMAL)
