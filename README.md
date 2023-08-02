@@ -1,6 +1,9 @@
 # pretty-print
 A CLI utility for transforming XML and JSON into a human readable format.
 
+## Dependencies
+In order to use clipboard mode on Linux, you must have `xclip` or `xsel` installed. I hope to drop this requirement in the future, but for now, one of those two programs are required.
+
 ## Example Usage
 By default `pretty-print` will take data from `stdin`, auto-detect + format it as either XML or JSON, and write the result to `stdout`.
 
